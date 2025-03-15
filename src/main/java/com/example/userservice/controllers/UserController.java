@@ -1,5 +1,6 @@
 package com.example.userservice.controllers;
 
+import com.example.userservice.dtos.SetUserRolesRequestDto;
 import com.example.userservice.dtos.UserDto;
 import com.example.userservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +19,18 @@ public class UserController {
         this.userService = userService;
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<UserDto> getUserDetails(@PathVariable("id") Long userId) {
-//        UserDto userDto = userService.getUserDetails(userId);
-//
-//        return new ResponseEntity<>(userDto, HttpStatus.OK);
-//    }
-//
-//    @PostMapping("/{id}/roles")
-//    public ResponseEntity<UserDto> setUserRoles(@PathVariable("id") Long userId, @RequestBody SetUserRolesRequestDto request) {
-//
-//        UserDto userDto = userService.setUserRoles(userId, request.getRoleIds());
-//
-//        return new ResponseEntity<>(userDto, HttpStatus.OK);
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getUserDetails(@PathVariable("id") Long userId) {
+        UserDto userDto = userService.getUserDetails(userId);
+
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<UserDto> setUserRoles(@PathVariable("id") Long userId, @RequestBody SetUserRolesRequestDto request) {
+
+        UserDto userDto = userService.setUserRoles(userId, request.getUserRoleIds());
+
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
 }

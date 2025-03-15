@@ -2,7 +2,9 @@ package com.example.userservice.services;
 
 import com.example.userservice.models.Role;
 import com.example.userservice.repositories.RoleRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RoleService {
     private RoleRepository roleRepository;
 
@@ -12,6 +14,8 @@ public class RoleService {
 
     public Role createRole(String name) {
         Role role = new Role();
-        return roleRepository.save(role);
+        role.setRole(name);
+        roleRepository.save(role);
+        return role;
     }
 }

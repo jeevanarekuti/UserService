@@ -9,6 +9,7 @@ import com.example.userservice.models.SessionStatus;
 import com.example.userservice.models.User;
 import com.example.userservice.repositories.SessionRepository;
 import com.example.userservice.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,15 +26,16 @@ import java.util.Optional;
 
 @Service
 public class AuthService {
-//    private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
     private SessionRepository sessionRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+//    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepository, SessionRepository sessionRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+
+    public AuthService(UserRepository userRepository, SessionRepository sessionRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public ResponseEntity<UserDto> login(String email, String password) throws UserDoesNotExistException,UserAlreadyLoggedInTwoDevices {
@@ -43,7 +45,7 @@ public class AuthService {
         }
 
         User user = userOptional.get();
-        if(!bCryptPasswordEncoder.matches(password, user.getPassword())) {
+        if(!passwordEncoder.matches(password, user.getPassword())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
@@ -75,10 +77,6 @@ public class AuthService {
         );
 
         return response;
-
-
-
-
     }
 
     public ResponseEntity<Void> logout(String token, Long userId) {
@@ -107,7 +105,7 @@ public class AuthService {
 
         User user = new User();
         user.setEmail(email);
-        user.setPassword(bCryptPasswordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(password));
         user.setName(name);
 
         User savedUser = userRepository.save(user);
